@@ -1,11 +1,11 @@
 package hospital;
 import java.sql.*;
-class staff 
+class Dr 
 {
     int id;
-    String name, department, shift;
+    String name, specialist, shift;
 }
-public class DAOstaff {
+public class DAOdr {
     Connection con = null;
     void connection(){
         try {
@@ -17,16 +17,16 @@ public class DAOstaff {
             System.out.println(ex);
         }
     }
-    int insert(staff s) {
+    int insert(Dr h) {
         int ret = 0;
         try{
             connection();
-            String qry = "insert into tblStaff values(?,?,?,?)";
+            String qry = "insert into tblDr values(?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
-            pst.setString(2, s.name);
-            pst.setString(3, s.department);
-            pst.setString(4, s.shift);
+            pst.setInt(1, h.id);
+            pst.setString(2, h.name);
+            pst.setString(3, h.specialist);
+            pst.setString(4, h.shift);
             ret=pst.executeUpdate();
         }catch(Exception ex){
             System.out.println("error in DAO insert");
@@ -34,16 +34,16 @@ public class DAOstaff {
         }
         return ret;
     }
-    int update(staff s) {
+    int update(Dr h) {
         int ret = 0;
         try{
             connection();
-            String qry = "update tblStaff set name=?, department=?, shift=? where id =?";
+            String qry = "update tblDr set name=?, speciality=?, shift=? where id =?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setString(1, s.name);
-            pst.setString(2, s.department);
-            pst.setString(3, s.shift);
-            pst.setInt(4, s.id);
+            pst.setString(1, h.name);
+            pst.setString(2, h.specialist);
+            pst.setString(3, h.shift);
+            pst.setInt(4, h.id);
             ret=pst.executeUpdate();
         }catch(Exception ex){
             System.out.println("error in DAO update");
@@ -51,14 +51,15 @@ public class DAOstaff {
         }
         return ret;
     }
-    int delete(staff s) {
+    int delete(Dr h) {
         int ret = 0;
         try {
             connection();
-            String qry = "delete from tblStaff where id=?";
+            String qry = "delete from tblDr where id=?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
+            pst.setInt(1, h.id);
             ret = pst.executeUpdate();
+           
         } 
         catch (Exception ex) {
             System.out.println("Error in deletion try again");
@@ -66,14 +67,14 @@ public class DAOstaff {
         }
         return ret;
     }
-    ResultSet SelectById(staff s) {
+    ResultSet SelectById(Dr h) {
         ResultSet ret = null;
         try{
             connection();
-            String qry = "select * from tblStaff where id =?";
+            String qry = "select * from tblDr where id =?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
-            ret = pst.executeQuery();
+            pst.setInt(1, h.id);
+            ret = pst.executeQuery();  
         } 
         catch (Exception ex) {
             System.out.println("Error in selected by ID, try again");
@@ -81,13 +82,13 @@ public class DAOstaff {
         }
         return ret;
     }
-    ResultSet SelectAll(staff s) {
+    ResultSet SelectAll(Dr h) {
         ResultSet ret = null;
         try{
             connection();
-            String qry = "select * from tblStaff";
+            String qry = "select * from tblDr";
             Statement st = con.createStatement();
-            ret = st.executeQuery(qry);
+            ret = st.executeQuery(qry); 
         } 
         catch (Exception ex) {
             System.out.println("Error in selected by ID, try again");

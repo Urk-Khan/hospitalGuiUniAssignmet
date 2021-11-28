@@ -1,32 +1,32 @@
 package hospital;
 import java.sql.*;
-class staff 
+class paitent 
 {
-    int id;
-    String name, department, shift;
+    int id, age;
+    String name, condition;
 }
-public class DAOstaff {
+public class DAOpaitent {
     Connection con = null;
-    void connection(){
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/dbhopital";
-            con = DriverManager.getConnection(url, "root", "");
-        } catch (Exception ex) {
-            System.out.println("Student_Connection Error try again");
-            System.out.println(ex);
+    void connection()
+    {
+        try{
+        Class.forName("com.mysql.jdbc.Driver");
+        String url = "jdbc:mysql://localhost:3306/dbhopital";
+        con = DriverManager.getConnection(url, "root", "");
+        }catch(Exception ex){
+            System.out.println("error in ");
         }
     }
-    int insert(staff s) {
+    int insert(paitent p) {
         int ret = 0;
         try{
             connection();
-            String qry = "insert into tblStaff values(?,?,?,?)";
+            String qry = "insert into tblPaitent values(?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
-            pst.setString(2, s.name);
-            pst.setString(3, s.department);
-            pst.setString(4, s.shift);
+            pst.setInt(1, p.id);
+            pst.setString(2, p.name);
+            pst.setInt(3, p.age);
+            pst.setString(4, p.condition);
             ret=pst.executeUpdate();
         }catch(Exception ex){
             System.out.println("error in DAO insert");
@@ -34,16 +34,16 @@ public class DAOstaff {
         }
         return ret;
     }
-    int update(staff s) {
+    int update(paitent p) {
         int ret = 0;
         try{
             connection();
-            String qry = "update tblStaff set name=?, department=?, shift=? where id =?";
+            String qry = "update tblPaitent set name=?, age=?, condition=? where id =?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setString(1, s.name);
-            pst.setString(2, s.department);
-            pst.setString(3, s.shift);
-            pst.setInt(4, s.id);
+            pst.setString(1, p.name);
+            pst.setInt(2, p.age);
+            pst.setString(3, p.condition);
+            pst.setInt(4, p.id);
             ret=pst.executeUpdate();
         }catch(Exception ex){
             System.out.println("error in DAO update");
@@ -51,13 +51,13 @@ public class DAOstaff {
         }
         return ret;
     }
-    int delete(staff s) {
+    int delete(paitent p) {
         int ret = 0;
         try {
             connection();
-            String qry = "delete from tblStaff where id=?";
+            String qry = "delete from tblPaitent where id=?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
+            pst.setInt(1, p.id);
             ret = pst.executeUpdate();
         } 
         catch (Exception ex) {
@@ -66,14 +66,14 @@ public class DAOstaff {
         }
         return ret;
     }
-    ResultSet SelectById(staff s) {
+    ResultSet SelectById(paitent p) {
         ResultSet ret = null;
         try{
             connection();
-            String qry = "select * from tblStaff where id =?";
+            String qry = "select * from tblPaitent where id =?";
             PreparedStatement pst = con.prepareStatement(qry);
-            pst.setInt(1, s.id);
-            ret = pst.executeQuery();
+            pst.setInt(1, p.id);
+            ret = pst.executeQuery();   
         } 
         catch (Exception ex) {
             System.out.println("Error in selected by ID, try again");
@@ -81,13 +81,13 @@ public class DAOstaff {
         }
         return ret;
     }
-    ResultSet SelectAll(staff s) {
+    ResultSet SelectAll(paitent p) {
         ResultSet ret = null;
         try{
             connection();
-            String qry = "select * from tblStaff";
+            String qry = "select * from tblPaitent";
             Statement st = con.createStatement();
-            ret = st.executeQuery(qry);
+            ret = st.executeQuery(qry);   
         } 
         catch (Exception ex) {
             System.out.println("Error in selected by ID, try again");

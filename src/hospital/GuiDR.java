@@ -1,23 +1,25 @@
 package hospital;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-public class GuiStaff extends JFrame implements ActionListener{
-    JLabel lid, lname, ldpt, l5;
+public class GuiDR extends JFrame implements ActionListener{
+    JLabel lid, lname, lspcl, l5;
     JRadioButton rmorning, rnight;
-    JTextField tid, tname, tdpt;
+    JTextField tid, tname, tspcl;
     JButton bhome, binsert, bupdate, bdelete, bselect, bselectAll;
     JComboBox cb1;
-    GuiStaff()
-    {
+    
+    GuiDR() {
+        
         setVisible(true);
         setSize(1000, 500);
         setDefaultCloseOperation(3);
         setLayout(new FlowLayout());
         lid = new JLabel("Id No");
         lname = new JLabel("Name");
-        ldpt = new JLabel("Department");
+        lspcl = new JLabel("specialization");
         l5 = new JLabel("");        //for output
         
         rmorning=new JRadioButton("Morning");
@@ -26,14 +28,14 @@ public class GuiStaff extends JFrame implements ActionListener{
 
         tid = new JTextField(15);
         tname = new JTextField(15);
-        tdpt = new JTextField(25);
+        tspcl = new JTextField(25);
 
         binsert = new JButton("Insert");
         bupdate = new JButton("Update");
         bdelete = new JButton("Delet");
         bselect = new JButton("Display");
-        bselectAll = new JButton("Display_All");
         bhome =new JButton("Home");
+        bselectAll = new JButton("Display_All");
 
         ButtonGroup bg=new ButtonGroup();
         bg.add(rmorning);
@@ -41,7 +43,7 @@ public class GuiStaff extends JFrame implements ActionListener{
         
         add(lid);       add(tid);
         add(lname);     add(tname);
-        add(ldpt);     add(tdpt);
+        add(lspcl);     add(tspcl);
         
         add(rmorning); add(rnight);
         add(binsert);
@@ -60,56 +62,59 @@ public class GuiStaff extends JFrame implements ActionListener{
         bselect.addActionListener(this);
         bselectAll.addActionListener(this);
         bhome.addActionListener(this);
+        
+        
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        try{
-            DAOstaff dao =new DAOstaff();
-            staff s = new staff();
+        try {
+            DAOdr dao =new DAOdr();
+            Dr h = new Dr();
             if (e.getSource() == binsert) {
                 if (tid.getText() != null) {
-                    s.id = Integer.parseInt(tid.getText());
+                    h.id = Integer.parseInt(tid.getText());
                 } else {
-                    s.id = 0;
-                }   
-                s.name = tname.getText();
-                s.department = tdpt.getText();
+                    h.id = 0;
+                }   h.name = tname.getText();
+                h.specialist = tspcl.getText();
                 if (rmorning.isSelected()){
-                    s.shift="Morning";
+                    h.shift="Morning";
                 }else{
-                    s.shift="Night";
-                }   
-                dao.insert(s);
+//                    h.shift="Night";
+                }   dao.insert(h);
                 l5.setText("inseted");
             }
             else if (e.getSource() == bupdate) {
                 if (tid.getText() != null) {
-                    s.id = Integer.parseInt(tid.getText());
+                    h.id = Integer.parseInt(tid.getText());
                 } else {
-                    s.id = 0;
-                }   
-                s.name = tname.getText();
-                s.department = tdpt.getText();
-                if (rmorning.isSelected()){
-                    s.shift="Morning";
-                }else{
-                    s.shift="Night";
+                    h.id = 0;
                 }
-                dao.update(s);
+                h.name = tname.getText();
+                h.specialist = tspcl.getText();
+                if (rmorning.isSelected())
+                {
+                    h.shift="Morning";
+                }else if (rnight.isSelected())
+                {
+                    h.shift="Night";
+                }
+                dao.update(h);
                 l5.setText("updated");
             }
             else if (e.getSource() == bdelete) {
-                dao.delete(s);
-                l5.setText("Deleted");
+                dao.delete(h);
+                l5.setText("Deled");
             }
             else if (e.getSource() == bselect) {
                  if (tid.getText() != null) {
-                     s.id = Integer.parseInt(tid.getText());
+                     h.id = Integer.parseInt(tid.getText());
                  } else {
-                     s.id = 0;  
+                     h.id = 0;  
                  }
                  cb1.removeAllItems();
-                ResultSet ret = dao.SelectById(s);
+                ResultSet ret = dao.SelectById(h);
                 while (ret.next()) {
                    cb1.addItem("id: " + ret.getString(1) );
                    cb1.addItem("Name: " + ret.getString(2));
@@ -120,7 +125,7 @@ public class GuiStaff extends JFrame implements ActionListener{
             else if (e.getSource() == bselectAll)
             {
                 cb1.removeAllItems();
-                ResultSet ret = dao.SelectAll(s);
+                ResultSet ret = dao.SelectAll(h);
                 while (ret.next()) {
                     cb1.addItem("id: " + ret.getString(1) );
                     cb1.addItem("Name: " + ret.getString(2));
@@ -137,4 +142,5 @@ public class GuiStaff extends JFrame implements ActionListener{
             System.out.println(ex);
         }
     }
+    
 }

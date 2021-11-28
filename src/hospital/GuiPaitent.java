@@ -1,15 +1,17 @@
 package hospital;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-public class GuiStaff extends JFrame implements ActionListener{
-    JLabel lid, lname, ldpt, l5;
-    JRadioButton rmorning, rnight;
-    JTextField tid, tname, tdpt;
-    JButton bhome, binsert, bupdate, bdelete, bselect, bselectAll;
+public class GuiPaitent extends JFrame implements ActionListener{
+    JLabel lid, lname, lage, lcondition, l5;
+    JRadioButton remergency, rnormal;
+    JTextField tid, tname, tage;
+    JButton binsert, bupdate, bdelete, bselect, bselectAll, bhome;
     JComboBox cb1;
-    GuiStaff()
+    
+    GuiPaitent()
     {
         setVisible(true);
         setSize(1000, 500);
@@ -17,16 +19,17 @@ public class GuiStaff extends JFrame implements ActionListener{
         setLayout(new FlowLayout());
         lid = new JLabel("Id No");
         lname = new JLabel("Name");
-        ldpt = new JLabel("Department");
+        lage = new JLabel("age");
         l5 = new JLabel("");        //for output
+        lcondition =new JLabel("condition");
         
-        rmorning=new JRadioButton("Morning");
-        rnight=new JRadioButton("Night");
+        remergency=new JRadioButton("Emergency");
+        rnormal=new JRadioButton("Normal");
         cb1 = new JComboBox();
-
+        
         tid = new JTextField(15);
         tname = new JTextField(15);
-        tdpt = new JTextField(25);
+        tage = new JTextField(25);
 
         binsert = new JButton("Insert");
         bupdate = new JButton("Update");
@@ -36,14 +39,15 @@ public class GuiStaff extends JFrame implements ActionListener{
         bhome =new JButton("Home");
 
         ButtonGroup bg=new ButtonGroup();
-        bg.add(rmorning);
-        bg.add(rnight);
+        bg.add(remergency);
+        bg.add(rnormal);
         
         add(lid);       add(tid);
         add(lname);     add(tname);
-        add(ldpt);     add(tdpt);
+        add(lage);     add(tage);
         
-        add(rmorning); add(rnight);
+        add(lcondition);
+        add(remergency); add(rnormal);
         add(binsert);
         add(bupdate);
         add(bdelete);
@@ -63,64 +67,65 @@ public class GuiStaff extends JFrame implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        try{
-            DAOstaff dao =new DAOstaff();
-            staff s = new staff();
+        try {
+            DAOpaitent dao =new DAOpaitent();
+            paitent p = new paitent();
             if (e.getSource() == binsert) {
                 if (tid.getText() != null) {
-                    s.id = Integer.parseInt(tid.getText());
+                    p.id = Integer.parseInt(tid.getText());
                 } else {
-                    s.id = 0;
+                    p.id = 0;
                 }   
-                s.name = tname.getText();
-                s.department = tdpt.getText();
-                if (rmorning.isSelected()){
-                    s.shift="Morning";
+                p.name = tname.getText();
+                p.age = Integer.parseInt(tage.getText());
+                if (remergency.isSelected()){
+                    p.condition="Emergency";
                 }else{
-                    s.shift="Night";
-                }   
-                dao.insert(s);
+                    p.condition="Normal";
+                }   dao.insert(p);
                 l5.setText("inseted");
             }
             else if (e.getSource() == bupdate) {
                 if (tid.getText() != null) {
-                    s.id = Integer.parseInt(tid.getText());
+                    p.id = Integer.parseInt(tid.getText());
                 } else {
-                    s.id = 0;
-                }   
-                s.name = tname.getText();
-                s.department = tdpt.getText();
-                if (rmorning.isSelected()){
-                    s.shift="Morning";
-                }else{
-                    s.shift="Night";
+                    p.id = 0;
                 }
-                dao.update(s);
+                p.name = tname.getText();
+                p.age = Integer.parseInt(tage.getText());
+                if (remergency.isSelected())
+                {
+                    p.condition="Emergency";
+                }else if (rnormal.isSelected())
+                {
+                    p.condition="Normal";
+                }
+                dao.update(p);
                 l5.setText("updated");
             }
             else if (e.getSource() == bdelete) {
-                dao.delete(s);
-                l5.setText("Deleted");
+                dao.delete(p);
+                l5.setText("Deled");
             }
             else if (e.getSource() == bselect) {
                  if (tid.getText() != null) {
-                     s.id = Integer.parseInt(tid.getText());
+                     p.id = Integer.parseInt(tid.getText());
                  } else {
-                     s.id = 0;  
+                     p.id = 0;  
                  }
                  cb1.removeAllItems();
-                ResultSet ret = dao.SelectById(s);
+                ResultSet ret = dao.SelectById(p);
                 while (ret.next()) {
                    cb1.addItem("id: " + ret.getString(1) );
                    cb1.addItem("Name: " + ret.getString(2));
-                   cb1.addItem("Specialization: " +  ret.getString(3));
-                   cb1.addItem("Shift: "+ret.getString(4));
+                   cb1.addItem("age: " +  ret.getString(3));
+                   cb1.addItem("Condition: "+ret.getString(4));
                 }
             }
             else if (e.getSource() == bselectAll)
             {
                 cb1.removeAllItems();
-                ResultSet ret = dao.SelectAll(s);
+                ResultSet ret = dao.SelectAll(p);
                 while (ret.next()) {
                     cb1.addItem("id: " + ret.getString(1) );
                     cb1.addItem("Name: " + ret.getString(2));
@@ -132,9 +137,10 @@ public class GuiStaff extends JFrame implements ActionListener{
             {
                 form obj = new form();
             }
-        }catch (Exception ex) {
-            System.out.println("error, Try again");
+        }catch(Exception ex)
+        {
+            System.out.println("error try again");
             System.out.println(ex);
-        }
-    }
+        }  
+    } 
 }
